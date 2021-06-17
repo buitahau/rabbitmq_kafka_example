@@ -13,4 +13,10 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>rabbitmq_kafka_listener</name>
 	<description>RabbitMQ Kafka Listener</description>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+		</dependency>
+	</dependencies>
 </project>

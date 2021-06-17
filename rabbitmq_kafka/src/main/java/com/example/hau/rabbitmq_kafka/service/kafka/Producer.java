@@ -12,14 +12,13 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 @Service
 public class Producer {
     private static final Logger logger = LoggerFactory.getLogger(Producer.class);
-    private static final String TOPIC = "users";
 
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    public void sendMessage(String message) {
-        logger.info(String.format("$$$ -> Producing message ---> %s", message));
-        ListenableFuture<SendResult<String, String>> future = this.kafkaTemplate.send(TOPIC, message);
+    public void sendMessage(String topic, String message) {
+        logger.info(String.format("$$$ -> Producing message %s to topic %s", message, topic));
+        ListenableFuture<SendResult<String, String>> future = this.kafkaTemplate.send(topic, message);
 
         future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
             @Override

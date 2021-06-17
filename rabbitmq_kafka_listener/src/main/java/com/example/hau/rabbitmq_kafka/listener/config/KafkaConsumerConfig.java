@@ -30,16 +30,17 @@ public class KafkaConsumerConfig {
         return new DefaultKafkaConsumerFactory<>(configProps);
     }
 
-    @Bean("kafkaListenerContainerFactory")
+    @Bean(name="kafkaListenerContainerFactory")
     public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
           ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
           factory.setConsumerFactory(consumerFactory());
           return factory;
     }
 
-    @Bean("filterKafkaListenerContainerFactory")
+    @Bean(name="filterKafkaListenerContainerFactory")
     public ConcurrentKafkaListenerContainerFactory<String, String> filterKafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, String> factory = kafkaListenerContainerFactory();
+        ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory());
         factory.setRecordFilterStrategy(consumerRecord -> consumerRecord.value().contains("skip"));
         return factory;
     }

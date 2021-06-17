@@ -14,7 +14,11 @@ public class KafkaConsumer {
 
     private final Logger logger = LoggerFactory.getLogger(KafkaConsumer.class);
 
-    @KafkaListener(topics = "users")
+    private final static String _TOPIC_1 = "topic_1";
+
+    private final static String _TOPIC_2 = "topic_1";
+
+    @KafkaListener(topics = _TOPIC_1, containerFactory = "kafkaListenerContainerFactory")
     public void consume(@Payload String message, @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition) {
         logger.info("-**Consume Normal------");
         logger.info(String.format("$$$ -> Consumed Message -> %s", message));
@@ -22,9 +26,9 @@ public class KafkaConsumer {
         logger.info("-*******-");
     }
 
-    @KafkaListener(topics = "users", containerFactory = "filterKafkaListenerContainerFactory")
+    @KafkaListener(topics = _TOPIC_2, containerFactory = "filterKafkaListenerContainerFactory")
     public void filterConsume( String message) {
-        logger.info("-**Filer Consume------");
+        logger.info("-**Filter Consume------");
         logger.info(String.format("$$$ -> Consumed Message -> %s", message));
         logger.info("-*******-");
     }
