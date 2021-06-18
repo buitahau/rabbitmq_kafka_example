@@ -1,5 +1,7 @@
 package com.example.hau.rabbitmq_kafka.listener.config;
 
+import com.example.hau.rabbitmq_kafka.listener.model.Employee;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,13 +22,23 @@ public class KafkaConsumerConfig {
     @Value("${kafka.bootstrap.server}")
     private String bootstrapServer;
 
-    @Bean
+    @Bean(name = "consumerFactory")
     public ConsumerFactory<String, String> consumerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
         configProps.put(ConsumerConfig.GROUP_ID_CONFIG, KAFKA_GROUP_ID);
         configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        return new DefaultKafkaConsumerFactory<>(configProps);
+    }
+
+    @Bean(name = "consumerFactoryEmployee")
+    public ConsumerFactory<String, Employee> consumerFactoryEmployee() {
+        Map<String, Object> configProps = new HashMap<>();
+        configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
+        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, KAFKA_GROUP_ID);
+        configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return new DefaultKafkaConsumerFactory<>(configProps);
     }
 
@@ -42,6 +54,13 @@ public class KafkaConsumerConfig {
         ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         factory.setRecordFilterStrategy(consumerRecord -> consumerRecord.value().contains("skip"));
+        return factory;
+    }
+
+    @Bean(name="kafkaListenerContainerFactoryEmployee")
+    public ConcurrentKafkaListenerContainerFactory<String, Employee> kafkaListenerContainerFactoryEmployee() {
+        ConcurrentKafkaListenerContainerFactory<String, Employee> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactoryEmployee());
         return factory;
     }
 

@@ -21,4 +21,9 @@ public class KafkaWebController {
     public void sendMessage(@RequestParam("message") String message, @RequestParam("topic") String topic) {
         this.producer.sendMessage(topic, message);
     }
+
+    @PostMapping(value = "/publish/employee")
+    public void sendEmployee(@RequestParam("empName") String empName) {
+        this.producer.sendMessageEmployee(empName);
+    }
 }
